@@ -28,8 +28,8 @@ export default class UserCard extends Vue {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 #UserCard {
-  height: 120px;
-  width: 500px;
+  height: 200px;
+  width: 400px;
   border-radius: 1em;
 
   margin: 1em;

@@ -1,16 +1,31 @@
 <template>
-  <a :href="repo.html_url" target="_blank" id="RepoCard">
-    <div id="InnerCard">
-      <p>{{ repo.name }}</p>
-      <p>Stars: {{ repo.stargazers_count }}</p>
-      <p>Language: {{ repo.language }}</p>
+  <div class="card">
+    <div class="card-header">
+      <img
+        class="col-sm"
+        :src="LanguageLogo(repo.language)"
+        height="32"
+        alt="Language"
+      />
+      <span class="col-sm h4">{{ repo.name }}</span>
     </div>
-  </a>
+
+    <div class="card-body">
+      <p class="card-text">{{ repo.description }}</p>
+      <div class="card-footer container row">
+        <p class="col-sm">Stars: {{ repo.stargazers_count }}</p>
+        <button class="btn btn-outline-success col-md" @click="openUrl">
+          Visit
+        </button>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import { Repo } from "@/backend/Repo";
+import { LanguageLogo } from "@/backend/Language";
 
 @Options({
   props: {
@@ -19,6 +34,11 @@ import { Repo } from "@/backend/Repo";
 })
 export default class RepoCard extends Vue {
   repo!: Repo;
+  LanguageLogo = LanguageLogo;
+
+  openUrl(): void {
+    window.open(this.repo.html_url, "_blank");
+  }
 }
 </script>
 

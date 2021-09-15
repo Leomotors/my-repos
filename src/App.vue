@@ -1,8 +1,31 @@
 <template>
+  <h1 class="display-3">My Repositories</h1>
   <UserCard :user="user_data" />
-  <div id="Cards">
-    <RepoCard :repo="repo" v-for="repo in repos_data" :key="repo.name" />
+  <div id="Cards" class="container-fluid row center">
+    <RepoCard
+      class="col-md-3"
+      :repo="repo"
+      v-for="repo in repos_data"
+      :key="repo.name"
+    />
   </div>
+  <form id="FooterBar" class="container-md justify-content-center">
+    <input
+      class="col-sm gx-5"
+      type="text"
+      id="SearchUser"
+      placeholder="Leomotors"
+      v-model.trim="user_to_view"
+    />
+    <button
+      class="col-sm gx-5 btn-success btn-sm"
+      type="button"
+      id="SearchBtn"
+      @click.prevent="viewUser"
+    >
+      View User
+    </button>
+  </form>
 </template>
 
 <script lang="ts">
@@ -20,6 +43,7 @@ async function loadData(
 ): Promise<{ user_data: User; repos_data: Repo[] }> {
   let repos_data = [];
 
+  console.log(`Querying User Data of ${user}`);
   const ures = await fetch(`https://api.github.com/users/${user}`);
   const utxt = await ures.text();
   const uobj = JSON.parse(utxt);
@@ -32,20 +56,41 @@ async function loadData(
     public_repos: uobj.public_repos,
   };
 
-  const rres = await fetch(`https://api.github.com/users/${user}/repos`);
-  const rtxt = await rres.text();
-  const robj = JSON.parse(rtxt);
+  // * Do not fetch more than 10 times, meaning more than 1k Repo is not supported
+  const PAGE_HARD_LIMIT = 10;
+  let page = 1;
 
-  for (const repo of robj) {
-    const repodata: Repo = {
-      name: repo.name,
-      html_url: repo.html_url,
-      stargazers_count: repo.stargazers_count,
-      language: repo.language,
-    };
+  while (page <= PAGE_HARD_LIMIT) {
+    console.log(`Querying Repos Page #${page}`);
+    const rres = await fetch(
+      `https://api.github.com/users/${user}/repos?per_page=100&page=${page}`
+    );
+    page++;
+    const rtxt = await rres.text();
+    const robj = JSON.parse(rtxt);
 
-    repos_data.push(repodata);
+    for (const repo of robj) {
+      const repodata: Repo = {
+        name: repo.name,
+        html_url: repo.html_url,
+        description: repo.description,
+        updated_at: repo.updated_at,
+        stargazers_count: repo.stargazers_count,
+        language: repo.language,
+      };
+      repos_data.push(repodata);
+    }
+
+    if (robj.length < 100) break;
   }
+
+  repos_data.sort((a: Repo, b: Repo) => {
+    const ad = a.updated_at;
+    const bd = b.updated_at;
+    if (ad > bd) return -1;
+    else if (ad < bd) return 1;
+    else return 0;
+  });
 
   console.log(`Successfully fetched all data of ${user}`);
   return { user_data, repos_data };
@@ -58,13 +103,23 @@ async function loadData(
   },
 })
 export default class App extends Vue {
+  user_to_view = "";
   user_data: User = DefaultUser;
   repos_data: Repo[] = [];
 
   async created(): Promise<void> {
-    const { user_data, repos_data } = await loadData(default_user);
+    const uri = window.location.search.substring(1);
+    const params = new URLSearchParams(uri);
+    const target_user = params.get("user") ?? default_user;
+
+    const { user_data, repos_data } = await loadData(target_user);
     this.user_data = user_data;
     this.repos_data = repos_data;
+  }
+
+  viewUser(): void {
+    window.location.href =
+      window.location.href.split("?")[0] + `?user=${this.user_to_view}`;
   }
 }
 </script>
@@ -77,10 +132,5 @@ export default class App extends Vue {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
-}
-
-#Cards {
-  display: grid;
-  grid-template-columns: repeat(3, 33%);
 }
 </style>
