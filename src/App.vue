@@ -1,5 +1,5 @@
 <template>
-  <h1 class="display-3">My Repositories</h1>
+  <h1 class="display-3 font-weight-bold">My Repositories</h1>
   <UserCard :user="user_data" />
   <div id="Cards" class="container-fluid row center">
     <RepoCard
@@ -126,7 +126,9 @@ export default class App extends Vue {
 
 <style lang="scss">
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", Avenir, Helvetica, Arial,
+    sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
