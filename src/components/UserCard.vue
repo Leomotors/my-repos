@@ -1,14 +1,32 @@
 <template>
-  <a :href="user.html_url" target="_blank" id="UserCard">
-    <div id="InnerCard">
-      <img class="pfp" alt="User Profile" :src="user.avatar_url" />
-      <div id="Details">
-        <p>{{ user.login }}</p>
+  <div class="UserCard container-xl">
+    <div class="row">
+      <div
+        height="100%"
+        class="pfp col-md-2"
+        :style="{ backgroundImage: `url(${user.avatar_url})` }"
+      ></div>
+      <div class="col-lg-6">
+        <h3>{{ user.login }}</h3>
         <p>{{ user.bio }}</p>
-        <p>Repos: {{ user.public_repos }}</p>
+        <p>Has {{ user.public_repos }} Public Repositories</p>
+        <div class="row mx-auto">
+          <button
+            class="btn btn-primary col-md-4"
+            @click="openUrl(user.html_url)"
+          >
+            Visit User Profile
+          </button>
+          <button
+            class="btn btn-outline-primary col-md-4"
+            @click="openUrl(`${user.html_url}?tab=repositories`)"
+          >
+            Visit User Repositories
+          </button>
+        </div>
       </div>
     </div>
-  </a>
+  </div>
 </template>
 
 <script lang="ts">
@@ -22,6 +40,10 @@ import { User } from "@/backend/User";
 })
 export default class UserCard extends Vue {
   user!: User;
+
+  openUrl(url: string): void {
+    window.open(url, "_blank");
+  }
 }
 </script>
 
@@ -37,7 +59,9 @@ export default class UserCard extends Vue {
 }
 
 .pfp {
-  height: 100px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 #InnerCard {

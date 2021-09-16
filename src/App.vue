@@ -1,14 +1,16 @@
 <template>
-  <h1 class="display-3 font-weight-bold">My Repositories</h1>
-  <UserCard :user="user_data" />
-  <div id="Cards" class="container-fluid row center">
+  <h1 class="display-3 fw-bold mt-5 mb-lg-10">My Repositories</h1>
+  <UserCard class="mx-auto" :user="user_data" />
+  <hr class="mt-5 mb-5" />
+  <div id="Cards" class="container-fluid row center mx-auto">
     <RepoCard
-      class="col-md-3"
+      class="col-md-4 col-lg-3"
       :repo="repo"
       v-for="repo in repos_data"
       :key="repo.name"
     />
   </div>
+  <hr />
   <form id="FooterBar" class="container-md justify-content-center">
     <input
       class="col-sm gx-5"
@@ -49,11 +51,7 @@ async function loadData(
   const uobj = JSON.parse(utxt);
 
   const user_data = {
-    login: uobj.login,
-    avatar_url: uobj.avatar_url,
-    html_url: uobj.html_url,
-    bio: uobj.bio,
-    public_repos: uobj.public_repos,
+    ...uobj,
   };
 
   // * Do not fetch more than 10 times, meaning more than 1k Repo is not supported
@@ -71,12 +69,7 @@ async function loadData(
 
     for (const repo of robj) {
       const repodata: Repo = {
-        name: repo.name,
-        html_url: repo.html_url,
-        description: repo.description,
-        updated_at: repo.updated_at,
-        stargazers_count: repo.stargazers_count,
-        language: repo.language,
+        ...repo,
       };
       repos_data.push(repodata);
     }
@@ -85,8 +78,8 @@ async function loadData(
   }
 
   repos_data.sort((a: Repo, b: Repo) => {
-    const ad = a.updated_at;
-    const bd = b.updated_at;
+    const ad = a.pushed_at;
+    const bd = b.pushed_at;
     if (ad > bd) return -1;
     else if (ad < bd) return 1;
     else return 0;
@@ -133,6 +126,9 @@ export default class App extends Vue {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
 }
+
+// hr {
+//   margin: 5em;
+// }
 </style>
