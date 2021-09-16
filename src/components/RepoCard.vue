@@ -1,15 +1,19 @@
 <template>
   <div class="card">
     <div class="card-header">
+      <span class="float-left align-left">{{ index }}</span>
       <img
-        class="col-sm"
+        class="col-sm px-1"
         :src="LanguageLogo(repo.language)"
         height="32"
         alt="Language"
       />
-      <span class="col-sm h4">
+      <span class="col-sm h4 px-1">
         {{ repo.name }}
-        <span class="badge badge-pill badge-primary" v-if="repo.fork">
+        <span
+          class="badge badge-pill badge-primary bg-dark px-1"
+          v-if="repo.fork"
+        >
           FORK
         </span>
       </span>
@@ -23,14 +27,14 @@
           class="btn btn-outline-success col-md-5"
           @click="openUrl(repo.html_url)"
         >
-          Visit
+          View Repo
         </button>
         <button
           class="btn btn-outline-primary col-md-3"
           @click="openUrl(repo.homepage)"
           v-if="repo.homepage"
         >
-          Web
+          Visit Web
         </button>
       </div>
     </div>
@@ -45,10 +49,12 @@ import { LanguageLogo } from "@/backend/Language";
 @Options({
   props: {
     repo: Object,
+    index: Number,
   },
 })
 export default class RepoCard extends Vue {
   repo!: Repo;
+  index!: number;
   LanguageLogo = LanguageLogo;
 
   openUrl(url: string): void {

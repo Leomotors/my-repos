@@ -5,9 +5,10 @@
   <div id="Cards" class="container-fluid row center mx-auto">
     <RepoCard
       class="col-md-4 col-lg-3"
-      :repo="repo"
-      v-for="repo in repos_data"
+      v-for="(repo, index) in repos_data"
       :key="repo.name"
+      :repo="repo"
+      :index="index + 1"
     />
   </div>
   <hr />

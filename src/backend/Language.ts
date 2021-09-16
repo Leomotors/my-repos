@@ -1,11 +1,12 @@
 // * Language.ts : Language Logo
 
-export const LanguageLogoData = {
+const LanguageLogoData = {
   DEFAULT:
     "https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Markdown-mark.svg/1280px-Markdown-mark.svg.png",
   C: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/C_Programming_Language.svg/695px-C_Programming_Language.svg.png",
   "C++":
     "https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/ISO_C%2B%2B_Logo.svg/1822px-ISO_C%2B%2B_Logo.svg.png",
+  "C#": "https://seeklogo.com/images/C/c-sharp-c-logo-02F17714BA-seeklogo.com.png",
   JavaScript:
     "https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Unofficial_JavaScript_logo_2.svg/2048px-Unofficial_JavaScript_logo_2.svg.png",
   TypeScript:
@@ -19,7 +20,6 @@ export const LanguageLogoData = {
   Dart: "https://storage.googleapis.com/datanyze-data//technologies/e5412305ba7dcf4b8dca7fe0fe97ecd444ceba25.png",
   Svelte:
     "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Svelte_Logo.svg/1200px-Svelte_Logo.svg.png",
-
   Vue: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Vue.js_Logo_2.svg/1184px-Vue.js_Logo_2.svg.png",
   "Jupyter Notebook":
     "https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/Jupyter_logo.svg/1200px-Jupyter_logo.svg.png",
@@ -28,6 +28,8 @@ export const LanguageLogoData = {
   Blade:
     "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Laravel.svg/220px-Laravel.svg.png",
   Ruby: "https://upload.wikimedia.org/wikipedia/commons/f/f1/Ruby_logo.png",
+  Java: "https://seeklogo.com/images/J/java-logo-7F8B35BAB3-seeklogo.com.png",
+  Kotlin: "https://upload.wikimedia.org/wikipedia/commons/7/74/Kotlin_Icon.png",
   Dogescript: "https://dogescript.io/assets/img/logo-small.png",
 };
 
