@@ -33,9 +33,6 @@ const LanguageLogoData = {
   Dogescript: "https://dogescript.io/assets/img/logo-small.png",
 };
 
-export function LanguageLogo(lang: string): string {
-  /* eslint-disable @typescript-eslint/ban-ts-comment */
-  // @ts-ignore
+export function LanguageLogo(lang: keyof typeof LanguageLogoData): string {
   return LanguageLogoData[lang] ?? LanguageLogoData.DEFAULT;
-  /* eslint-enable */
 }

@@ -30,7 +30,7 @@
           View Repo
         </button>
         <button
-          class="btn btn-outline-primary col-md-3"
+          class="btn btn-outline-primary col-md-3 ms-1"
           @click="openUrl(repo.homepage)"
           v-if="repo.homepage"
         >

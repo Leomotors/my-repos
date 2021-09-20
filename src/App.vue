@@ -1,10 +1,26 @@
 <template>
   <h1 class="display-3 fw-bold mt-5 mb-lg-10">My Repositories</h1>
-  <UserCard class="mx-auto" :user="user_data" />
+  <UserCard class="mx-auto mt-5" :user="user_data" />
   <hr class="mt-5 mb-5" />
+  <div class="input-group btn-toolbar mx-auto mb-5 justify-content-center">
+    <div class="input-group-text" id="btnGroupAddon">Sort By</div>
+    <button
+      type="button"
+      v-for="method in sortMethods"
+      :key="method.name"
+      class="btn btn-outline-secondary"
+      :class="{ active: method.name == currentSortMethods }"
+      @click="setSortMethod(method)"
+    >
+      {{ method.name }}
+    </button>
+
+    <!-- <button type="button" class="btn btn-outline-secondary">Stars</button>
+    <button type="button" class="btn btn-outline-secondary">Language</button> -->
+  </div>
   <div id="Cards" class="container-fluid row center mx-auto">
     <RepoCard
-      class="col-md-4 col-lg-3"
+      class="col-md-6 col-lg-4 col-xl-3"
       v-for="(repo, index) in repos_data"
       :key="repo.name"
       :repo="repo"
@@ -12,16 +28,17 @@
     />
   </div>
   <hr />
-  <form id="FooterBar" class="container-md justify-content-center">
+  <form id="FooterBar" class="container-md justify-content-center mb-2">
+    <label for="name"> Search Other User </label>
     <input
-      class="col-sm gx-5"
+      class="col-sm mx-2"
       type="text"
       id="SearchUser"
       placeholder="Leomotors"
       v-model.trim="user_to_view"
     />
     <button
-      class="col-sm gx-5 btn-success btn-sm"
+      class="col-sm mx-1 btn-success btn-sm"
       type="button"
       id="SearchBtn"
       @click.prevent="viewUser"
@@ -40,6 +57,38 @@ import { Repo } from "@/backend/Repo";
 import { User, DefaultUser } from "@/backend/User";
 
 const default_user = "Leomotors";
+
+// * Sort from most to least
+const cmp = (a: number | string, b: number | string) => {
+  if (a > b) return -1;
+  else if (a < b) return 1;
+  else return 0;
+};
+
+const sortMethods = {
+  recent_updated: {
+    name: "Last Pushed",
+    func: (a: Repo, b: Repo): number => cmp(a.pushed_at, b.pushed_at),
+  },
+  recent_created: {
+    name: "Last Created",
+    func: (a: Repo, b: Repo): number => cmp(a.created_at, b.created_at),
+  },
+  most_stars: {
+    name: "Most Stars",
+    func: (a: Repo, b: Repo): number =>
+      cmp(a.stargazers_count, b.stargazers_count),
+  },
+  name: {
+    name: "Repo Name",
+    func: (a: Repo, b: Repo): number => cmp(b.name, a.name),
+  },
+  language: {
+    name: "Language",
+    func: (a: Repo, b: Repo): number =>
+      cmp(b.language ?? "Markdown", a.language ?? "Markdown"),
+  },
+};
 
 async function loadData(
   user: string
@@ -78,13 +127,7 @@ async function loadData(
     if (robj.length < 100) break;
   }
 
-  repos_data.sort((a: Repo, b: Repo) => {
-    const ad = a.pushed_at;
-    const bd = b.pushed_at;
-    if (ad > bd) return -1;
-    else if (ad < bd) return 1;
-    else return 0;
-  });
+  repos_data.sort(sortMethods.recent_updated.func);
 
   console.log(`Successfully fetched all data of ${user}`);
   return { user_data, repos_data };
@@ -100,15 +143,25 @@ export default class App extends Vue {
   user_to_view = "";
   user_data: User = DefaultUser;
   repos_data: Repo[] = [];
+  sortMethods = sortMethods;
+  currentSortMethods = "Last Pushed";
 
   async created(): Promise<void> {
     const uri = window.location.search.substring(1);
     const params = new URLSearchParams(uri);
-    const target_user = params.get("user") ?? default_user;
+    const target_user = params.get("user") || default_user;
 
     const { user_data, repos_data } = await loadData(target_user);
     this.user_data = user_data;
     this.repos_data = repos_data;
+  }
+
+  setSortMethod(method: {
+    name: string;
+    func: (a: Repo, b: Repo) => number;
+  }): void {
+    this.currentSortMethods = method.name;
+    this.repos_data.sort(method.func);
   }
 
   viewUser(): void {
@@ -128,8 +181,4 @@ export default class App extends Vue {
   text-align: center;
   color: #2c3e50;
 }
-
-// hr {
-//   margin: 5em;
-// }
 </style>
