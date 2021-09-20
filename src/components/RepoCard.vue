@@ -1,14 +1,16 @@
 <template>
   <div class="card">
-    <div class="card-header">
-      <span class="float-left align-left">{{ index }}</span>
+    <div class="card-header py-3">
+      <span class="float-left align-left text-muted">
+        <strong>{{ index }}</strong>
+      </span>
       <img
-        class="col-sm px-1"
+        class="lang-logo px-1"
         :src="LanguageLogo(repo.language)"
         height="32"
         alt="Language"
       />
-      <span class="col-sm h4 px-1">
+      <span class="h4 px-1">
         {{ repo.name }}
         <span
           class="badge badge-pill badge-primary bg-dark px-1"
@@ -19,18 +21,26 @@
       </span>
     </div>
 
-    <div class="card-body">
+    <div
+      class="
+        card-body
+        d-flex
+        flex-column
+        align-items-center
+        justify-content-between
+      "
+    >
       <p class="card-text">{{ repo.description }}</p>
-      <div class="card-footer container row">
+      <div class="card-footer container row align-items-baseline pt-3">
         <p class="col-sm">Stars: {{ repo.stargazers_count }}</p>
         <button
-          class="btn btn-outline-success col-md-5"
+          class="btn btn-outline-success col-5"
           @click="openUrl(repo.html_url)"
         >
           View Repo
         </button>
         <button
-          class="btn btn-outline-primary col-md-3 ms-1"
+          class="btn btn-outline-primary col-3 ms-1"
           @click="openUrl(repo.homepage)"
           v-if="repo.homepage"
         >
@@ -63,22 +73,10 @@ export default class RepoCard extends Vue {
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-#RepoCard {
-  height: 120px;
-  border-radius: 1em;
-  background-color: lavender;
-  margin: 1em;
-  padding: 0.5em;
-}
-
-#InnerCard {
-  padding: 1em;
-}
-
-a {
-  color: black;
-  text-decoration: none;
+.lang-logo {
+  position: relative;
+  top: -0.25em;
+  margin-left: 0.2em;
 }
 </style>

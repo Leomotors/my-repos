@@ -1,8 +1,8 @@
 <template>
   <h1 class="display-3 fw-bold mt-5 mb-lg-10">My Repositories</h1>
   <UserCard class="mx-auto mt-5" :user="user_data" />
-  <hr class="mt-5 mb-5" />
-  <div class="input-group btn-toolbar mx-auto mb-5 justify-content-center">
+  <hr class="mt-5 mb-4" />
+  <div class="input-group btn-toolbar mx-auto mb-4 justify-content-center">
     <div class="input-group-text" id="btnGroupAddon">Sort By</div>
     <button
       type="button"
@@ -14,10 +14,8 @@
     >
       {{ method.name }}
     </button>
-
-    <!-- <button type="button" class="btn btn-outline-secondary">Stars</button>
-    <button type="button" class="btn btn-outline-secondary">Language</button> -->
   </div>
+
   <div id="Cards" class="container-fluid row center mx-auto">
     <RepoCard
       class="col-md-6 col-lg-4 col-xl-3"
@@ -28,7 +26,7 @@
     />
   </div>
   <hr />
-  <form id="FooterBar" class="container-md justify-content-center mb-2">
+  <form id="FooterBar" class="container-md justify-content-center mb-3">
     <label for="name"> Search Other User </label>
     <input
       class="col-sm mx-2"
@@ -81,7 +79,8 @@ const sortMethods = {
   },
   name: {
     name: "Repo Name",
-    func: (a: Repo, b: Repo): number => cmp(b.name, a.name),
+    func: (a: Repo, b: Repo): number =>
+      cmp(b.name.toLowerCase(), a.name.toLowerCase()),
   },
   language: {
     name: "Language",

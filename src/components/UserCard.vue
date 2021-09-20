@@ -74,9 +74,4 @@ export default class UserCard extends Vue {
   background-repeat: no-repeat;
   background-size: cover;
 }
-
-a {
-  color: black;
-  text-decoration: none;
-}
 </style>
