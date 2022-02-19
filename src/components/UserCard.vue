@@ -51,7 +51,7 @@
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import { User } from "@/backend/User";
+import { User } from "@/backend/types";
 
 @Options({
   props: {

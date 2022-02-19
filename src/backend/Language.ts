@@ -31,6 +31,7 @@ const LanguageLogoData = {
   Java: "https://seeklogo.com/images/J/java-logo-7F8B35BAB3-seeklogo.com.png",
   Kotlin: "https://upload.wikimedia.org/wikipedia/commons/7/74/Kotlin_Icon.png",
   Dogescript: "https://dogescript.io/assets/img/logo-small.png",
+  TeX: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/TeX_logo.svg/2560px-TeX_logo.svg.png",
 };
 
 export function LanguageLogo(lang: keyof typeof LanguageLogoData): string {

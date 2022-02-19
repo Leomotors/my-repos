@@ -51,8 +51,8 @@ import { Options, Vue } from "vue-class-component";
 import UserCard from "@/components/UserCard.vue";
 import RepoCard from "@/components/RepoCard.vue";
 
-import { Repo } from "@/backend/Repo";
-import { User, DefaultUser } from "@/backend/User";
+import { DefaultUser } from "@/backend/User";
+import { User, Repo } from "@/backend/types";
 
 const default_user = "Leomotors";
 
@@ -66,16 +66,17 @@ const cmp = (a: number | string, b: number | string) => {
 const sortMethods = {
   recent_updated: {
     name: "Last Pushed",
-    func: (a: Repo, b: Repo): number => cmp(a.pushed_at, b.pushed_at),
+    func: (a: Repo, b: Repo): number => cmp(a.pushed_at ?? 0, b.pushed_at ?? 0),
   },
   recent_created: {
     name: "Last Created",
-    func: (a: Repo, b: Repo): number => cmp(a.created_at, b.created_at),
+    func: (a: Repo, b: Repo): number =>
+      cmp(a.created_at ?? 0, b.created_at ?? 0),
   },
   most_stars: {
     name: "Most Stars",
     func: (a: Repo, b: Repo): number =>
-      cmp(a.stargazers_count, b.stargazers_count),
+      cmp(a.stargazers_count ?? 0, b.stargazers_count ?? 0),
   },
   name: {
     name: "Repo Name",

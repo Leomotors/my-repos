@@ -53,7 +53,7 @@
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import { Repo } from "@/backend/Repo";
+import { Repo } from "@/backend/types";
 import { LanguageLogo } from "@/backend/Language";
 
 @Options({
