@@ -1,6 +1,6 @@
 <template>
   <h1 class="display-3 fw-bold mt-5 mb-lg-10">My Repositories</h1>
-  <UserCard class="mx-auto mt-5" :user="user_data" />
+  <UserCard class="mx-auto mt-5" :user="user_data" :fork_count="fork_count" />
   <hr class="mt-5 mb-4" />
   <div class="input-group btn-toolbar mx-auto mb-4 justify-content-center">
     <div class="input-group-text" id="btnGroupAddon">Sort By</div>
@@ -57,52 +57,48 @@ import { User, Repo } from "@/backend/types";
 const default_user = "Leomotors";
 
 // * Sort from most to least
-const cmp = (a: number | string, b: number | string) => {
+function cmp<T extends number | string>(a: T, b: T): number {
   if (a > b) return -1;
   else if (a < b) return 1;
   else return 0;
-};
+}
 
-const sortMethods = {
+type cmpFunc = (a: Repo, b: Repo) => number;
+type sortMethod = { name: string; func: cmpFunc };
+
+const sortMethods: { [type: string]: sortMethod } = {
   recent_updated: {
     name: "Last Pushed",
-    func: (a: Repo, b: Repo): number => cmp(a.pushed_at ?? 0, b.pushed_at ?? 0),
+    func: (a, b) => cmp(a.pushed_at ?? 0, b.pushed_at ?? 0),
   },
   recent_created: {
     name: "Last Created",
-    func: (a: Repo, b: Repo): number =>
-      cmp(a.created_at ?? 0, b.created_at ?? 0),
+    func: (a, b) => cmp(a.created_at ?? 0, b.created_at ?? 0),
   },
   most_stars: {
     name: "Most Stars",
-    func: (a: Repo, b: Repo): number =>
-      cmp(a.stargazers_count ?? 0, b.stargazers_count ?? 0),
+    func: (a, b) => cmp(a.stargazers_count ?? 0, b.stargazers_count ?? 0),
   },
   name: {
     name: "Repo Name",
-    func: (a: Repo, b: Repo): number =>
-      cmp(b.name.toLowerCase(), a.name.toLowerCase()),
+    func: (a, b) => cmp(b.name.toLowerCase(), a.name.toLowerCase()),
   },
   language: {
     name: "Language",
-    func: (a: Repo, b: Repo): number =>
-      cmp(b.language ?? "Markdown", a.language ?? "Markdown"),
+    func: (a, b) => cmp(b.language ?? "Markdown", a.language ?? "Markdown"),
   },
 };
 
 async function loadData(
   user: string
-): Promise<{ user_data: User; repos_data: Repo[] }> {
+): Promise<{ user_data: User; repos_data: Repo[]; fork_count: number }> {
   let repos_data = [];
+  let fork_count = 0;
 
   console.log(`Querying User Data of ${user}`);
   const ures = await fetch(`https://api.github.com/users/${user}`);
   const utxt = await ures.text();
-  const uobj = JSON.parse(utxt);
-
-  const user_data = {
-    ...uobj,
-  };
+  const user_data = JSON.parse(utxt) as User;
 
   // * Do not fetch more than 10 times, meaning more than 1k Repo is not supported
   const PAGE_HARD_LIMIT = 10;
@@ -118,10 +114,8 @@ async function loadData(
     const robj = JSON.parse(rtxt);
 
     for (const repo of robj) {
-      const repodata: Repo = {
-        ...repo,
-      };
-      repos_data.push(repodata);
+      if ((repo as Repo).fork) fork_count++;
+      repos_data.push(repo as Repo);
     }
 
     if (robj.length < 100) break;
@@ -130,7 +124,7 @@ async function loadData(
   repos_data.sort(sortMethods.recent_updated.func);
 
   console.log(`Successfully fetched all data of ${user}`);
-  return { user_data, repos_data };
+  return { user_data, repos_data, fork_count };
 }
 
 @Options({
@@ -145,21 +139,20 @@ export default class App extends Vue {
   repos_data: Repo[] = [];
   sortMethods = sortMethods;
   currentSortMethods = "Last Pushed";
+  fork_count = 0;
 
   async created(): Promise<void> {
     const uri = window.location.search.substring(1);
     const params = new URLSearchParams(uri);
     const target_user = params.get("user") || default_user;
 
-    const { user_data, repos_data } = await loadData(target_user);
+    const { user_data, repos_data, fork_count } = await loadData(target_user);
     this.user_data = user_data;
     this.repos_data = repos_data;
+    this.fork_count = fork_count;
   }
 
-  setSortMethod(method: {
-    name: string;
-    func: (a: Repo, b: Repo) => number;
-  }): void {
+  setSortMethod(method: sortMethod): void {
     this.currentSortMethods = method.name;
     this.repos_data.sort(method.func);
   }

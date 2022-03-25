@@ -22,13 +22,7 @@
     </div>
 
     <div
-      class="
-        card-body
-        d-flex
-        flex-column
-        align-items-center
-        justify-content-between
-      "
+      class="card-body d-flex flex-column align-items-center justify-content-between"
     >
       <p class="card-text">{{ repo.description }}</p>
       <div class="card-footer container row align-items-baseline pt-3">
