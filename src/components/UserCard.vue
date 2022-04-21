@@ -4,7 +4,7 @@
       height="100%"
       class="pfp col-2"
       :style="{ backgroundImage: `url(${user.avatar_url})` }"
-    ></div>
+    />
     <div class="profile-info col-8">
       <span class="h3 mx-1">{{ user.login }}</span>
       <span class="h4 mx-1 text-muted" v-if="user.type == 'User' && user.name">
@@ -29,7 +29,8 @@
           />
         </svg>
         <p>
-          {{ user.public_repos }} Public Repositories ({{ fork_count }} Forks)
+          {{ user.public_repos }} Public Repositories ({{ fork_count }} Forks,
+          {{ archived_count }} Archived)
         </p>
       </div>
       <p v-if="user.type == 'User'">
@@ -59,11 +60,13 @@ import { User } from "@/backend/types";
   props: {
     user: Object,
     fork_count: Number,
+    archived_count: Number,
   },
 })
 export default class UserCard extends Vue {
   user!: User;
   fork_count!: number;
+  archived_count!: number;
 
   openUrl(url: string): void {
     window.open(url, "_blank");
@@ -77,5 +80,6 @@ export default class UserCard extends Vue {
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
+  border: 0.4em solid gold;
 }
 </style>

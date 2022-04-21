@@ -1,6 +1,11 @@
 <template>
   <h1 class="display-3 fw-bold mt-5 mb-lg-10">My Repositories</h1>
-  <UserCard class="mx-auto mt-5" :user="user_data" :fork_count="fork_count" />
+  <UserCard
+    class="mx-auto mt-5"
+    :user="user_data"
+    :fork_count="fork_count"
+    :archived_count="archived_count"
+  />
   <hr class="mt-5 mb-4" />
   <div class="input-group btn-toolbar mx-auto mb-4 justify-content-center">
     <div class="input-group-text" id="btnGroupAddon">Sort By</div>
@@ -89,11 +94,15 @@ const sortMethods: { [type: string]: sortMethod } = {
   },
 };
 
-async function loadData(
-  user: string
-): Promise<{ user_data: User; repos_data: Repo[]; fork_count: number }> {
+async function loadData(user: string): Promise<{
+  user_data: User;
+  repos_data: Repo[];
+  fork_count: number;
+  archived_count: number;
+}> {
   let repos_data = [];
   let fork_count = 0;
+  let archived_count = 0;
 
   console.log(`Querying User Data of ${user}`);
   const ures = await fetch(`https://api.github.com/users/${user}`);
@@ -115,6 +124,7 @@ async function loadData(
 
     for (const repo of robj) {
       if ((repo as Repo).fork) fork_count++;
+      if ((repo as Repo).archived) archived_count++;
       repos_data.push(repo as Repo);
     }
 
@@ -124,7 +134,7 @@ async function loadData(
   repos_data.sort(sortMethods.recent_updated.func);
 
   console.log(`Successfully fetched all data of ${user}`);
-  return { user_data, repos_data, fork_count };
+  return { user_data, repos_data, fork_count, archived_count };
 }
 
 @Options({
@@ -140,16 +150,19 @@ export default class App extends Vue {
   sortMethods = sortMethods;
   currentSortMethods = "Last Pushed";
   fork_count = 0;
+  archived_count = 0;
 
   async created(): Promise<void> {
     const uri = window.location.search.substring(1);
     const params = new URLSearchParams(uri);
     const target_user = params.get("user") || default_user;
 
-    const { user_data, repos_data, fork_count } = await loadData(target_user);
+    const { user_data, repos_data, fork_count, archived_count } =
+      await loadData(target_user);
     this.user_data = user_data;
     this.repos_data = repos_data;
     this.fork_count = fork_count;
+    this.archived_count = archived_count;
   }
 
   setSortMethod(method: sortMethod): void {
